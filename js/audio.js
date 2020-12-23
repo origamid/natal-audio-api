@@ -11,7 +11,7 @@ const audioContext = (context) => (frequency, time) => {
   g.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 2);
   g.connect(context.destination);
   o.start(0);
-  setTimeout((o) => o.stop(context.currentTime + time));
+  o.stop(context.currentTime + 900);
 };
 
 window.tID = [];
@@ -103,7 +103,7 @@ function blink(el) {
 window.playGlobalNote = (frequency) => {
   const context = new (window.AudioContext || window.webkitAudioContext)();
   const playNote = audioContext(context);
-  playNote(frequency, 0);
+  playNote(frequency, 600);
 };
 
 function makeTree(song) {
