@@ -1,17 +1,21 @@
 import notes from './notes.js';
 
-const audioContext = (context) => (frequency, time) => {
+const audioContext = (/** @type {AudioContext} */ context) => (frequency) => {
   const o = context.createOscillator();
   const g = context.createGain();
-
   o.connect(g);
   o.type = 'sine';
   o.frequency.value = frequency;
   g.gain.value = 0.25;
-  g.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 2);
   g.connect(context.destination);
-  o.start(0);
-  o.stop(context.currentTime + 900);
+  g.gain.setValueAtTime(g.gain.value, context.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 2);
+  o.start(context.currentTime);
+  setTimeout(() => {
+    g.gain.setValueAtTime(g.gain.value, context.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.03);
+    o.stop();
+  }, 1200);
 };
 
 window.tID = [];
@@ -21,9 +25,9 @@ function playSong(song) {
   const playNote = audioContext(context);
   for (let i = 0; i < song.length; i++) {
     const tID = setTimeout(() => {
-      playNote(notes[song[i][0]], song[i][1]);
-      const treeLi = document.querySelector(`[data-note="${song[i][0]}"]`);
-      blink(treeLi);
+      playNote(notes[song[i][0]]);
+      const li = document.querySelector(`[data-note="${song[i][0]}"]`);
+      blink(li);
     }, song[i][1]);
     window.tID.push(tID);
   }
@@ -103,7 +107,7 @@ function blink(el) {
 window.playGlobalNote = (frequency) => {
   const context = new (window.AudioContext || window.webkitAudioContext)();
   const playNote = audioContext(context);
-  playNote(frequency, 600);
+  playNote(frequency);
 };
 
 function makeTree(song) {

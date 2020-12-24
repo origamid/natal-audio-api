@@ -143,9 +143,10 @@ button:active {
 
 .buttons {
   margin: 2rem auto;
-  display: flex;
+  display: grid;
+  grid-template-columns: 40px 40px;
   justify-content: center;
-  gap: 10px;
+  gap: 5px;
 }
 
 #footer {
